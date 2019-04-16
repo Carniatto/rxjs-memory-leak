@@ -1,0 +1,22 @@
+.navigation {
+  div {
+    text-align: center;
+    margin: 10px;
+    cursor: pointer;
+    padding: 10px;
+    width: 100px;
+    &:focus {
+      outline: 0;
+    }
+    &:hover {
+      border-bottom: 3px solid rgb(24, 146, 186);
+    }
+  }
+  display: flex;
+  border-bottom: 1px solid lightgray;
+  width: 100%;
+}
+
+.active {
+  border-bottom: 3px solid rgb(24, 146, 186);
+}

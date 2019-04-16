@@ -1,27 +1,76 @@
-# RxjsMemoryLeak
+# RXJS memory leak
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.1.0.
+## Solution 1
 
-## Development server
+Keep an array of your subscriptions and unsubscribe when the `OnDrestroy` hook is invoked
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+```ts
+subscriptions: Subscriptions[]
 
-## Code scaffolding
+ngOnInit() {
+  this.subscriptions = [
+    source1$.subscribe(console.log),
+    source2$.subscribe(console.log),
+    source3$.subscribe(console.log)
+  ]
+}
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+ngOnDestroy() {
+  this.subscriptions.forEach(
+    subs => subs.unsubscribe()
+  )
+}
+```
 
-## Build
+## Solution 2
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Use a `subject` to emit when the `OnDrestroy` hook is invoked and pipe the `takeUntil` operator in your subscriptions
 
-## Running unit tests
+```ts
+destroy$: Subject
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+ngOnInit() {
+  source1$
+    .pipe(takeUnitil(destroy$))
+    .subscribe(console.log)
 
-## Running end-to-end tests
+  source2$
+    .pipe(takeUnitil(destroy$))
+    .subscribe(console.log)
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+  source3$
+    .pipe(takeUnitil(destroy$))
+    .subscribe(console.log)
+}
 
-## Further help
+ngOnDestroy() {
+  this.destroy$.next()
+  this.destroy.complete()
+}
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+## Solution 3
+
+Use the `async` pipe as much as possible. This allows you to subscribe automatically in the template and will guarantedly unsubscribe in component destruction. (tip: you can preprocess your data or log using the pipe operator)
+
+```ts
+ngOnInit() {
+    pipedSource1 = source1$.pipe(tap(console.log))
+    pipedSource2 = source2$.pipe(tap(console.log))
+    pipedSource3 = source3$.pipe(tap(console.log))
+}
+```
+
+```html
+<div *ngIf="pipedSource1$ | async as source1">
+  {{ source1 }}
+</div>
+
+<div *ngIf="pipedSource2$ | async as source2">
+  {{ source2 }}
+</div>
+
+<div *ngIf="pipedSource3$ | async as source3">
+  {{ source3 }}
+</div>
+```
