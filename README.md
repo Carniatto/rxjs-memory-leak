@@ -31,15 +31,15 @@ destroy$: Subject
 
 ngOnInit() {
   source1$
-    .pipe(takeUnitil(destroy$))
+    .pipe(takeUntil(destroy$))
     .subscribe(console.log)
 
   source2$
-    .pipe(takeUnitil(destroy$))
+    .pipe(takeUntil(destroy$))
     .subscribe(console.log)
 
   source3$
-    .pipe(takeUnitil(destroy$))
+    .pipe(takeUntil(destroy$))
     .subscribe(console.log)
 }
 
