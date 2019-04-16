@@ -2,7 +2,7 @@
 
 ## Solution 1
 
-Keep an array of your subscriptions and unsubscribe when the `OnDrestroy` hook is invoked
+Keep an array of your subscriptions and unsubscribe when the `OnDestroy` hook is invoked
 
 ```ts
 subscriptions: Subscriptions[]
@@ -24,7 +24,7 @@ ngOnDestroy() {
 
 ## Solution 2
 
-Use a `subject` to emit when the `OnDrestroy` hook is invoked and pipe the `takeUntil` operator in your subscriptions
+Use a `subject` to emit when the `OnDestroy` hook is invoked and pipe the `takeUntil` operator in your subscriptions
 
 ```ts
 destroy$: Subject
@@ -51,7 +51,7 @@ ngOnDestroy() {
 
 ## Solution 3
 
-Use the `async` pipe as much as possible. This allows you to subscribe automatically in the template and will guarantedly unsubscribe in component destruction. (tip: you can preprocess your data or log using the pipe operator)
+Use the `async` pipe as much as possible. This allows you to subscribe automatically in the template and will unsubscribe in component destruction. (tip: you can preprocess your data or log using the pipe operator)
 
 ```ts
 ngOnInit() {
